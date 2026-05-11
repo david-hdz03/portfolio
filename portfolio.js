@@ -138,6 +138,15 @@ const EXPERIENCE = [
     desc: "Colaboré en el desarrollo de una plataforma de mesa de ayuda, creando API's REST con Express JS y gestionando la base de datos MySQL para optimizar el rendimiento de consultas. Implementé nuevas funcionalidades e interfaces en React, buscando mejorar la experiencia del usuario y la eficiencia del sistema.",
     stack: ["React", "MySQL", "Express JS"],
   },
+  {
+    role: "Licenciatura en Informática",
+    company: "Facultad de Contaduría y Administración · UNAM",
+    period: "2020 — 2024",
+    location: "Ciudad de México",
+    desc: "Formación en desarrollo de software, bases de datos, sistemas de información y administración de proyectos tecnológicos.",
+    stack: [],
+    isEducation: true,
+  },
 ];
 
 const PROJECTS = [
@@ -587,7 +596,7 @@ function Experience({ palette }) {
                 <div
                   className="timeline-dot"
                   style={{
-                    background: palette.accent1,
+                    background: job.isEducation ? palette.accent3 : palette.accent1,
                     borderColor: palette.bg,
                   }}
                 ></div>
@@ -597,7 +606,9 @@ function Experience({ palette }) {
                   <div>
                     <div className="timeline-role">{job.role}</div>
                     <div className="timeline-company">
-                      <span style={{ color: palette.accent1 }}>@</span>{" "}
+                      <span style={{ color: job.isEducation ? palette.accent3 : palette.accent1 }}>
+                        {job.isEducation ? "🎓" : "@"}
+                      </span>{" "}
                       {job.company} · {job.location}
                     </div>
                   </div>
