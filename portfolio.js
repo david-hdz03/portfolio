@@ -147,6 +147,8 @@ const PROJECTS = [
     desc: "App de control de finanzas personales con dashboard de ingresos y gastos, autenticación JWT con refresh automático, verificación de correo y layouts diferenciados para web y Android.",
     stack: ["Flutter", "Dart", "Riverpod", "FastAPI"],
     color: 2,
+    image: "images/login.png",
+    demo: "https://flowcash.cloud/",
   },
 ];
 
@@ -671,15 +673,22 @@ function Projects({ palette }) {
                 style={{ transitionDelay: `${i * 60}ms`, "--accent": accent }}
               >
                 <div className="project-image">
-                  <div className="project-image-grid"></div>
-                  <div
-                    className="project-image-shape"
-                    style={{ background: accent }}
-                  ></div>
-                  <div className="project-image-shape project-image-shape-2"></div>
-                  <span className="project-image-label">
-                    // {p.name.toLowerCase().replace(/[^a-z]/g, "-")}.png
-                  </span>
+                  {p.image ? (
+                    <img
+                      src={p.image}
+                      alt={p.name}
+                      style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", borderRadius: "inherit" }}
+                    />
+                  ) : (
+                    <>
+                      <div className="project-image-grid"></div>
+                      <div className="project-image-shape" style={{ background: accent }}></div>
+                      <div className="project-image-shape project-image-shape-2"></div>
+                      <span className="project-image-label">
+                        // {p.name.toLowerCase().replace(/[^a-z]/g, "-")}.png
+                      </span>
+                    </>
+                  )}
                 </div>
                 <div className="project-body">
                   <div className="project-head">
@@ -690,20 +699,23 @@ function Projects({ palette }) {
                       {p.tag}
                     </span>
                     <div className="project-links">
-                      <button className="project-link" aria-label="Demo">
-                        <svg
-                          width="14"
-                          height="14"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                        >
-                          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                          <path d="M15 3h6v6" />
-                          <path d="M10 14 21 3" />
-                        </svg>
-                      </button>
+                      {p.demo ? (
+                        <a href={p.demo} target="_blank" rel="noopener noreferrer" className="project-link" aria-label="Demo">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                            <path d="M15 3h6v6" />
+                            <path d="M10 14 21 3" />
+                          </svg>
+                        </a>
+                      ) : (
+                        <button className="project-link" aria-label="Demo" disabled>
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                            <path d="M15 3h6v6" />
+                            <path d="M10 14 21 3" />
+                          </svg>
+                        </button>
+                      )}
                       <button className="project-link" aria-label="Repositorio">
                         <svg
                           width="14"
