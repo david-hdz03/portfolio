@@ -156,7 +156,7 @@ const PROJECTS = [
     desc: "App de control de finanzas personales con dashboard de ingresos y gastos, autenticación JWT con refresh automático, verificación de correo y soporte para web y Android.",
     stack: ["Flutter", "Dart", "Riverpod", "FastAPI"],
     color: 2,
-    image: "images/login.png",
+    images: ["images/login.png", "images/dashboard.png", "images/new-transaction.png"],
     demo: "https://flowcash.cloud/",
     repos: [
       { label: "Frontend", url: "https://github.com/david-hdz03/expense-control-frontend" },
@@ -637,10 +637,12 @@ function Experience({ palette }) {
 
 function Projects({ palette }) {
   const [filter, setFilter] = useState("Todos");
+  const [lightbox, setLightbox] = useState(null);
   const tags = ["Todos", ...new Set(PROJECTS.map((p) => p.tag))];
   const shown =
     filter === "Todos" ? PROJECTS : PROJECTS.filter((p) => p.tag === filter);
   return (
+    <>
     <section
       id="projects"
       data-screen-label="04 Projects"
@@ -687,12 +689,16 @@ function Projects({ palette }) {
                 className="project-card reveal"
                 style={{ transitionDelay: `${i * 60}ms`, "--accent": accent }}
               >
-                <div className="project-image">
-                  {p.image ? (
+                <div
+                  className="project-image"
+                  style={p.images?.length ? { cursor: "zoom-in" } : {}}
+                  onClick={() => p.images?.length && setLightbox({ images: p.images, index: 0 })}
+                >
+                  {p.images?.length ? (
                     <img
-                      src={p.image}
+                      src={p.images[0]}
                       alt={p.name}
-                      style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", borderRadius: "inherit" }}
+                      style={{ width: "100%", height: "100%", objectFit: "contain", display: "block", background: "#0a0a0f" }}
                     />
                   ) : (
                     <>
@@ -764,6 +770,14 @@ function Projects({ palette }) {
         </div>
       </div>
     </section>
+    {lightbox && (
+      <Lightbox
+        images={lightbox.images}
+        startIndex={lightbox.index}
+        onClose={() => setLightbox(null)}
+      />
+    )}
+  </>
   );
 }
 
@@ -1037,6 +1051,84 @@ function Footer({ palette }) {
         </div>
       </div>
     </footer>
+  );
+}
+
+// ============================================================
+// LIGHTBOX
+// ============================================================
+function Lightbox({ images, startIndex, onClose }) {
+  const [idx, setIdx] = useState(startIndex);
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === "Escape") onClose();
+      if (e.key === "ArrowRight") setIdx((i) => (i + 1) % images.length);
+      if (e.key === "ArrowLeft") setIdx((i) => (i - 1 + images.length) % images.length);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [images.length, onClose]);
+
+  return (
+    <div
+      style={{
+        position: "fixed", inset: 0, zIndex: 9999,
+        background: "rgba(0,0,0,0.92)",
+        display: "flex", flexDirection: "column",
+        alignItems: "center", justifyContent: "center",
+        gap: "16px",
+      }}
+      onClick={onClose}
+    >
+      <div style={{ position: "relative", maxWidth: "90vw", maxHeight: "80vh" }} onClick={(e) => e.stopPropagation()}>
+        <img
+          src={images[idx]}
+          alt={`Screenshot ${idx + 1}`}
+          style={{ maxWidth: "90vw", maxHeight: "80vh", objectFit: "contain", borderRadius: "8px", display: "block" }}
+        />
+        {images.length > 1 && (
+          <>
+            <button
+              onClick={() => setIdx((i) => (i - 1 + images.length) % images.length)}
+              style={{
+                position: "absolute", left: "-48px", top: "50%", transform: "translateY(-50%)",
+                background: "rgba(255,255,255,0.1)", border: "none", color: "#fff",
+                width: "36px", height: "36px", borderRadius: "50%", cursor: "pointer", fontSize: "18px",
+              }}
+            >‹</button>
+            <button
+              onClick={() => setIdx((i) => (i + 1) % images.length)}
+              style={{
+                position: "absolute", right: "-48px", top: "50%", transform: "translateY(-50%)",
+                background: "rgba(255,255,255,0.1)", border: "none", color: "#fff",
+                width: "36px", height: "36px", borderRadius: "50%", cursor: "pointer", fontSize: "18px",
+              }}
+            >›</button>
+          </>
+        )}
+      </div>
+      <div style={{ display: "flex", gap: "8px" }}>
+        {images.map((_, i) => (
+          <button
+            key={i}
+            onClick={(e) => { e.stopPropagation(); setIdx(i); }}
+            style={{
+              width: "8px", height: "8px", borderRadius: "50%", border: "none", cursor: "pointer",
+              background: i === idx ? "#fff" : "rgba(255,255,255,0.3)",
+              padding: 0,
+            }}
+          />
+        ))}
+      </div>
+      <button
+        onClick={onClose}
+        style={{
+          position: "fixed", top: "16px", right: "20px",
+          background: "none", border: "none", color: "#fff", fontSize: "28px", cursor: "pointer",
+        }}
+      >×</button>
+    </div>
   );
 }
 
